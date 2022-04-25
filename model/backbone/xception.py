@@ -19,7 +19,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.model_zoo as model_zoo
 from torch.nn import init
-from network.se_module import SELayer
 
 pretrained_settings = {
     'xception': {
@@ -119,11 +118,6 @@ class Xception(nn.Module):
 
         self.num_classes = num_classes
 
-        # self.se1 = SELayer()
-        # self.se2 = SELayer()
-        self.se3 = SELayer(1536)
-        self.se4 = SELayer(2048)
-
         self.conv1 = nn.Conv2d(3, 32, 3, 2, 0, bias=False)
         self.bn1 = nn.BatchNorm2d(32)  # 批量归一化
         self.relu = nn.ReLU(inplace=True)
@@ -204,12 +198,10 @@ class Xception(nn.Module):
         x = self.block12(x)
 
         x = self.conv3(x)
-        x = self.se3(x)
         x = self.bn3(x)
         x = self.relu(x)
 
         x = self.conv4(x)
-        x = self.se4(x)
         x = self.bn4(x)
         return x  # 1
 
